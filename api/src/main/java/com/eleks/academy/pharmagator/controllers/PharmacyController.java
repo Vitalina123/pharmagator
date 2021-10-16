@@ -3,10 +3,12 @@ package com.eleks.academy.pharmagator.controllers;
 import com.eleks.academy.pharmagator.entities.Pharmacy;
 import com.eleks.academy.pharmagator.repositories.PharmacyRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
+import java.util.Optional;
 
 @Controller
 @RequiredArgsConstructor
@@ -20,37 +22,44 @@ public class PharmacyController {
     }
 
     @GetMapping("/pharmacy/{id}")
-    public ResponseEntity<Pharmacy> getEmployeeById(@PathVariable(value = "id") Long pharmacyId)
-            throws Exception {
-        Pharmacy pharmacy = pharmacyRepository.findById(pharmacyId)
-                .orElseThrow(() -> new Exception("Pharmacy not found for this id :: " + pharmacyId));
-        return ResponseEntity.ok().body(pharmacy);
+    public ResponseEntity<Pharmacy> getById(@PathVariable(value = "id") Long pharmacyId) {
+        Optional<Pharmacy> pharmacy = pharmacyRepository.findById(pharmacyId);
+
+        return pharmacy.isPresent() ? new ResponseEntity(pharmacy.get(), HttpStatus.OK) : new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
     @PostMapping("/pharmacies")
     public ResponseEntity<Pharmacy> create(@RequestBody Pharmacy pharmacy) {
-        return ResponseEntity.ok().body(pharmacyRepository.save(pharmacy));
+        try {
+            Pharmacy createdPharmacy = pharmacyRepository.save(pharmacy);
+            return new ResponseEntity<>(createdPharmacy, HttpStatus.CREATED);
+        } catch (Exception e) {
+            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
     @PutMapping("/pharmacy/{id}")
     public ResponseEntity<Pharmacy> update(@PathVariable(value = "id") Long pharmacyId,
-                                                   @RequestBody Pharmacy pharmacyDetails) throws Exception {
-        Pharmacy pharmacy = pharmacyRepository.findById(pharmacyId)
-                .orElseThrow(() -> new Exception("Pharmacy not found for this id :: " + pharmacyId));
+                                           @RequestBody Pharmacy pharmacyDetails) {
+        Optional<Pharmacy> pharmacy = pharmacyRepository.findById(pharmacyId);
 
-        pharmacy.setName(pharmacyDetails.getName());
-        pharmacy.setMedicineLinkTemplate(pharmacyDetails.getMedicineLinkTemplate());
-        final Pharmacy updatedPharmacy = pharmacyRepository.save(pharmacy);
-        return ResponseEntity.ok(updatedPharmacy);
+        if (pharmacy.isPresent()) {
+            Pharmacy updatedPharmacy = pharmacy.get();
+            updatedPharmacy.setName(pharmacyDetails.getName());
+            updatedPharmacy.setMedicineLinkTemplate(pharmacyDetails.getMedicineLinkTemplate());
+            return new ResponseEntity<>(pharmacyRepository.save(updatedPharmacy), HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
     }
 
     @DeleteMapping("/pharmacy/{id}")
-    public ResponseEntity delete(@PathVariable(value = "id") Long pharmacyId)
-            throws Exception {
-        Pharmacy pharmacy = pharmacyRepository.findById(pharmacyId)
-                .orElseThrow(() -> new Exception("Employee not found for this id :: " + pharmacyId));
-
-        pharmacyRepository.delete(pharmacy);
-        return ResponseEntity.ok(true);
+    public ResponseEntity delete(@PathVariable(value = "id") Long pharmacyId) {
+        try {
+            pharmacyRepository.deleteById(pharmacyId);
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 }
