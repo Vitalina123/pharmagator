@@ -41,15 +41,11 @@ public class PharmacyController {
     @PutMapping("/pharmacy/{id}")
     public ResponseEntity<PharmacyDTO> update(@PathVariable(value = "id") Long pharmacyId,
                                            @RequestBody PharmacyDTO pharmacyDetails) {
-        Optional<PharmacyDTO> pharmacy = Optional.ofNullable(pharmacyService.getById(pharmacyId));
-
-        if (pharmacy.isPresent()) {
-            PharmacyDTO updatedPharmacy = pharmacy.get();
-            updatedPharmacy.setName(pharmacyDetails.getName());
-            updatedPharmacy.setMedicineLinkTemplate(pharmacyDetails.getMedicineLinkTemplate());
-            return new ResponseEntity(pharmacyService.update(updatedPharmacy), HttpStatus.OK);
-        } else {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        try {
+            PharmacyDTO updatedPharmacy = pharmacyService.update(pharmacyDetails, pharmacyId);
+            return updatedPharmacy.equals(null)?new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR):new ResponseEntity<>(updatedPharmacy, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 

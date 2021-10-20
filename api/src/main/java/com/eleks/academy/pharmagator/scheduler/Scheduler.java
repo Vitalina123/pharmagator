@@ -1,7 +1,7 @@
 package com.eleks.academy.pharmagator.scheduler;
 
 import com.eleks.academy.pharmagator.dataproviders.DataProvider;
-import com.eleks.academy.pharmagator.dataproviders.dto.MedicineDto;
+import com.eleks.academy.pharmagator.dataproviders.dto.MedicineDTO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -22,7 +22,7 @@ public class Scheduler {
         dataProvider.loadData().forEach(this::storeToDatabase);
     }
 
-    private void storeToDatabase(MedicineDto dto) {
+    private void storeToDatabase(MedicineDTO dto) {
         // TODO: convert DTO to Entity and store to database
     }
 }

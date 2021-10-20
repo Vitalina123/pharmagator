@@ -13,7 +13,7 @@ import java.math.BigDecimal;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class MedicineDto {
+public class MedicineDTO {
 
     @NotNull
     private String title;

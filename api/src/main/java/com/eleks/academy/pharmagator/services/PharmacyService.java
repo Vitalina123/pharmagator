@@ -11,7 +11,7 @@ public interface PharmacyService {
 
     PharmacyDTO create(PharmacyDTO pharmacy);
 
-    PharmacyDTO update(PharmacyDTO pharmacy);
+    PharmacyDTO update(PharmacyDTO pharmacy, Long pharmacyId);
 
     void delete(Long pharmacyId);
 }
