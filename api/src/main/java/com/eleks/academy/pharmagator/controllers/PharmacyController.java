@@ -1,37 +1,37 @@
 package com.eleks.academy.pharmagator.controllers;
 
-import com.eleks.academy.pharmagator.entities.Pharmacy;
-import com.eleks.academy.pharmagator.repositories.PharmacyRepository;
+import com.eleks.academy.pharmagator.dataproviders.dto.PharmacyDTO;
+import com.eleks.academy.pharmagator.services.PharmacyService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+
 import java.util.List;
 import java.util.Optional;
 
-@Controller
+@RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1")
 public class PharmacyController {
-    private final PharmacyRepository pharmacyRepository;
+    private final PharmacyService pharmacyService;
 
     @GetMapping("/pharmacies")
-    public ResponseEntity<List<Pharmacy>> getAll() {
-        return ResponseEntity.ok(pharmacyRepository.findAll());
+    public ResponseEntity<List<PharmacyDTO>> getAll() {
+        return ResponseEntity.ok(pharmacyService.getAll());
     }
 
     @GetMapping("/pharmacy/{id}")
-    public ResponseEntity<Pharmacy> getById(@PathVariable(value = "id") Long pharmacyId) {
-        Optional<Pharmacy> pharmacy = pharmacyRepository.findById(pharmacyId);
+    public ResponseEntity<PharmacyDTO> getById(@PathVariable(value = "id") Long pharmacyId) {
+        Optional<PharmacyDTO> pharmacy = Optional.ofNullable(pharmacyService.getById(pharmacyId));
 
         return pharmacy.isPresent() ? new ResponseEntity(pharmacy.get(), HttpStatus.OK) : new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
     @PostMapping("/pharmacies")
-    public ResponseEntity<Pharmacy> create(@RequestBody Pharmacy pharmacy) {
+    public ResponseEntity<PharmacyDTO> create(@RequestBody PharmacyDTO pharmacy) {
         try {
-            Pharmacy createdPharmacy = pharmacyRepository.save(pharmacy);
+            PharmacyDTO createdPharmacy = pharmacyService.create(pharmacy);
             return new ResponseEntity<>(createdPharmacy, HttpStatus.CREATED);
         } catch (Exception e) {
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
@@ -39,15 +39,15 @@ public class PharmacyController {
     }
 
     @PutMapping("/pharmacy/{id}")
-    public ResponseEntity<Pharmacy> update(@PathVariable(value = "id") Long pharmacyId,
-                                           @RequestBody Pharmacy pharmacyDetails) {
-        Optional<Pharmacy> pharmacy = pharmacyRepository.findById(pharmacyId);
+    public ResponseEntity<PharmacyDTO> update(@PathVariable(value = "id") Long pharmacyId,
+                                           @RequestBody PharmacyDTO pharmacyDetails) {
+        Optional<PharmacyDTO> pharmacy = Optional.ofNullable(pharmacyService.getById(pharmacyId));
 
         if (pharmacy.isPresent()) {
-            Pharmacy updatedPharmacy = pharmacy.get();
+            PharmacyDTO updatedPharmacy = pharmacy.get();
             updatedPharmacy.setName(pharmacyDetails.getName());
             updatedPharmacy.setMedicineLinkTemplate(pharmacyDetails.getMedicineLinkTemplate());
-            return new ResponseEntity<>(pharmacyRepository.save(updatedPharmacy), HttpStatus.OK);
+            return new ResponseEntity(pharmacyService.update(updatedPharmacy), HttpStatus.OK);
         } else {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
@@ -56,7 +56,7 @@ public class PharmacyController {
     @DeleteMapping("/pharmacy/{id}")
     public ResponseEntity delete(@PathVariable(value = "id") Long pharmacyId) {
         try {
-            pharmacyRepository.deleteById(pharmacyId);
+            pharmacyService.delete(pharmacyId);
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
