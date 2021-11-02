@@ -24,9 +24,9 @@ public class MedicineDTO {
                 .build();
     }
 
-    public Medicine convertToDB(MedicineDTO medicine){
+    public Medicine convertToDB(MedicineDTO medicineDTO){
         return Medicine.builder()
-                .title(medicine.getTitle())
+                .title(medicineDTO.getTitle())
                 .build();
     }
 }
