@@ -17,9 +17,7 @@ public class DataProviderImpl implements DataProvider {
 
     private MedicineDTO buildDto(int i) {
         return MedicineDTO.builder()
-                .externalId(String.valueOf(i))
                 .title("title" + i)
-                .price(BigDecimal.valueOf(Math.random()))
                 .build();
     }
 }

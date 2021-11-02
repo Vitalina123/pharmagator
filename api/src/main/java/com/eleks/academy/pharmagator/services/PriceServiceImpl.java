@@ -4,7 +4,6 @@ import com.eleks.academy.pharmagator.dataproviders.dto.PriceDTO;
 import com.eleks.academy.pharmagator.entities.Price;
 import com.eleks.academy.pharmagator.entities.PriceId;
 import com.eleks.academy.pharmagator.repositories.PriceRepository;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -20,24 +19,21 @@ import java.util.stream.Collectors;
 public class PriceServiceImpl implements PriceService{
 
     @Autowired
-    private final ObjectMapper mapper;
-
-    @Autowired
     private final PriceRepository priceRepository;
     @Override
     public List<PriceDTO> getAll() {
-        return priceRepository.findAll().stream().map(price -> mapper.convertValue(price, PriceDTO.class)).collect(Collectors.toList());
+        return priceRepository.findAll().stream().map(price -> new PriceDTO().convertToDTO(price)).collect(Collectors.toList());
     }
 
     @Override
     public PriceDTO getById(Long pharmacyId, Long medicineId) {
         PriceId id = new PriceId(pharmacyId, medicineId);
-        return mapper.convertValue(priceRepository.findById(id), PriceDTO.class);
+        return new PriceDTO().convertToDTO(priceRepository.findById(id).get());
     }
 
     @Override
     public PriceDTO create(PriceDTO price) {
-        return mapper.convertValue(priceRepository.save(mapper.convertValue(price, Price.class)), PriceDTO.class);
+        return new PriceDTO().convertToDTO(priceRepository.save(new PriceDTO().convertToDB(price)));
     }
 
     @Override
@@ -53,7 +49,7 @@ public class PriceServiceImpl implements PriceService{
             updatedPrice.setExternalId(price.getExternalId());
             updatedPrice.setUpdatedAt(price.getUpdatedAt());
         }
-        return mapper.convertValue(priceRepository.save(mapper.convertValue(updatedPrice, Price.class)), PriceDTO.class);
+        return new PriceDTO().convertToDTO(priceRepository.save(updatedPrice));
     }
 
     @Override

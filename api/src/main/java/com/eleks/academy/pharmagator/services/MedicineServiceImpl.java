@@ -3,7 +3,6 @@ package com.eleks.academy.pharmagator.services;
 import com.eleks.academy.pharmagator.dataproviders.dto.MedicineDTO;
 import com.eleks.academy.pharmagator.entities.Medicine;
 import com.eleks.academy.pharmagator.repositories.MedicineRepository;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -19,24 +18,21 @@ import java.util.stream.Collectors;
 public class MedicineServiceImpl implements MedicineService {
 
     @Autowired
-    private final ObjectMapper mapper;
-
-    @Autowired
     private final MedicineRepository medicineRepository;
 
     @Override
     public List<MedicineDTO> getAll() {
-        return medicineRepository.findAll().stream().map(medicine -> mapper.convertValue(medicine, MedicineDTO.class)).collect(Collectors.toList());
+        return medicineRepository.findAll().stream().map(medicine -> new MedicineDTO().convertToDTO(medicine)).collect(Collectors.toList());
     }
 
     @Override
     public MedicineDTO getById(Long medicineId) {
-        return mapper.convertValue(medicineRepository.findById(medicineId), MedicineDTO.class);
+        return new MedicineDTO().convertToDTO(medicineRepository.findById(medicineId).get());
     }
 
     @Override
     public MedicineDTO create(MedicineDTO medicine) {
-        return mapper.convertValue(medicineRepository.save(mapper.convertValue(medicine, Medicine.class)), MedicineDTO.class);
+        return new MedicineDTO().convertToDTO(medicineRepository.save(new MedicineDTO().convertToDB(medicine)));
     }
 
     @Override
@@ -47,7 +43,7 @@ public class MedicineServiceImpl implements MedicineService {
             updatedMedicine = medicineToUpdated.get();
             updatedMedicine.setTitle(medicine.getTitle());
         }
-        return mapper.convertValue(medicineRepository.save(mapper.convertValue(updatedMedicine, Medicine.class)), MedicineDTO.class);
+        return new MedicineDTO().convertToDTO(medicineRepository.save(updatedMedicine));
 
     }
 

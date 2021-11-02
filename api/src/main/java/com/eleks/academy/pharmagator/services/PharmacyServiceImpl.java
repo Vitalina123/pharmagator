@@ -3,7 +3,6 @@ package com.eleks.academy.pharmagator.services;
 import com.eleks.academy.pharmagator.dataproviders.dto.PharmacyDTO;
 import com.eleks.academy.pharmagator.entities.Pharmacy;
 import com.eleks.academy.pharmagator.repositories.PharmacyRepository;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -19,25 +18,22 @@ import java.util.stream.Collectors;
 public class PharmacyServiceImpl implements PharmacyService {
 
     @Autowired
-    private final ObjectMapper mapper;
-
-    @Autowired
     private final PharmacyRepository pharmacyRepository;
 
 
     @Override
     public List<PharmacyDTO> getAll() {
-        return pharmacyRepository.findAll().stream().map(pharmacy -> mapper.convertValue(pharmacy, PharmacyDTO.class)).collect(Collectors.toList());
+        return pharmacyRepository.findAll().stream().map(pharmacy ->new PharmacyDTO().convertToDTO(pharmacy)).collect(Collectors.toList());
     }
 
     @Override
     public PharmacyDTO getById(Long pharmacyId) {
-        return mapper.convertValue(pharmacyRepository.findById(pharmacyId), PharmacyDTO.class);
+        return new PharmacyDTO().convertToDTO(pharmacyRepository.findById(pharmacyId).get());
     }
 
     @Override
     public PharmacyDTO create(PharmacyDTO pharmacy) {
-        return mapper.convertValue(pharmacyRepository.save(mapper.convertValue(pharmacy, Pharmacy.class)), PharmacyDTO.class);
+        return new PharmacyDTO().convertToDTO(pharmacyRepository.save(new PharmacyDTO().convertToDB(pharmacy)));
     }
 
     @Override
@@ -50,7 +46,7 @@ public class PharmacyServiceImpl implements PharmacyService {
             updatedPharmacy.setName(pharmacy.getName());
             updatedPharmacy.setMedicineLinkTemplate(pharmacy.getMedicineLinkTemplate());
         }
-        return mapper.convertValue(pharmacyRepository.save(mapper.convertValue(updatedPharmacy, Pharmacy.class)), PharmacyDTO.class);
+        return new PharmacyDTO().convertToDTO(pharmacyRepository.save(updatedPharmacy));
     }
 
     @Override

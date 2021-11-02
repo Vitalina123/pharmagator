@@ -1,5 +1,6 @@
 package com.eleks.academy.pharmagator.dataproviders.dto;
 
+import com.eleks.academy.pharmagator.entities.Price;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -29,4 +30,24 @@ public class PriceDTO {
 
     @NotNull
     private Instant updatedAt;
+
+    public PriceDTO convertToDTO(Price price){
+        return PriceDTO.builder()
+                .pharmacyId(price.getPharmacyId())
+                .medicineId(price.getMedicineId())
+                .price(price.getPrice())
+                .externalId(price.getExternalId())
+                .updatedAt(price.getUpdatedAt())
+                .build();
+    }
+
+    public Price convertToDB(PriceDTO price){
+        return Price.builder()
+                .pharmacyId(price.getPharmacyId())
+                .medicineId(price.getMedicineId())
+                .price(price.getPrice())
+                .externalId(price.getExternalId())
+                .updatedAt(price.getUpdatedAt())
+                .build();
+    }
 }
