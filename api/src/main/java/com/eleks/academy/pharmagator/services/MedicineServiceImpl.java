@@ -32,7 +32,7 @@ public class MedicineServiceImpl implements MedicineService {
 
     @Override
     public MedicineDTO create(MedicineDTO medicine) {
-        return new MedicineDTO().convertToDTO(medicineRepository.save(new MedicineDTO().convertToDB(medicine)));
+        return new MedicineDTO().convertToDTO(medicineRepository.save(medicine.convertToEntity()));
     }
 
     @Override

@@ -33,7 +33,7 @@ public class PriceServiceImpl implements PriceService{
 
     @Override
     public PriceDTO create(PriceDTO price) {
-        return new PriceDTO().convertToDTO(priceRepository.save(new PriceDTO().convertToDB(price)));
+        return new PriceDTO().convertToDTO(priceRepository.save(price.convertToEntity()));
     }
 
     @Override

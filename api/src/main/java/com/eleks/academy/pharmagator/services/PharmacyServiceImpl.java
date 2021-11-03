@@ -33,7 +33,7 @@ public class PharmacyServiceImpl implements PharmacyService {
 
     @Override
     public PharmacyDTO create(PharmacyDTO pharmacy) {
-        return new PharmacyDTO().convertToDTO(pharmacyRepository.save(new PharmacyDTO().convertToDB(pharmacy)));
+        return new PharmacyDTO().convertToDTO(pharmacyRepository.save(pharmacy.convertToEntity()));
     }
 
     @Override

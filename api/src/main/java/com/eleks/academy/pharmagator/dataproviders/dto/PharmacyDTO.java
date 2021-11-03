@@ -27,10 +27,10 @@ public class PharmacyDTO {
                 .build();
     }
 
-    public Pharmacy convertToDB(PharmacyDTO pharmacy){
+    public Pharmacy convertToEntity(){
         return Pharmacy.builder()
-                .name(pharmacy.getName())
-                .medicineLinkTemplate(pharmacy.getMedicineLinkTemplate())
+                .name(this.name)
+                .medicineLinkTemplate(this.medicineLinkTemplate)
                 .build();
     }
 }

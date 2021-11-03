@@ -41,13 +41,13 @@ public class PriceDTO {
                 .build();
     }
 
-    public Price convertToDB(PriceDTO price){
+    public Price convertToEntity(){
         return Price.builder()
-                .pharmacyId(price.getPharmacyId())
-                .medicineId(price.getMedicineId())
-                .price(price.getPrice())
-                .externalId(price.getExternalId())
-                .updatedAt(price.getUpdatedAt())
+                .pharmacyId(this.pharmacyId)
+                .medicineId(this.medicineId)
+                .price(this.price)
+                .externalId(this.externalId)
+                .updatedAt(this.updatedAt)
                 .build();
     }
 }
