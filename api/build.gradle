@@ -28,6 +28,9 @@ dependencies {
 	implementation 'io.springfox:springfox-boot-starter:3.0.0'
     implementation 'junit:junit:4.13.2'
 	compileOnly 'org.projectlombok:lombok:1.18.22'
+	annotationProcessor 'org.projectlombok:lombok'
+	testCompileOnly 'org.projectlombok:lombok'
+	testAnnotationProcessor 'org.projectlombok:lombok'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test:2.5.5'
 	testImplementation 'com.h2database:h2:1.4.200'
 }
