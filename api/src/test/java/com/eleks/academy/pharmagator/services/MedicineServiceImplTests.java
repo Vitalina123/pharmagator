@@ -48,7 +48,7 @@ public class MedicineServiceImplTests {
     }
 
     @Test
-    public void create_medicineIsNotValid_ConstraintViolationExceptionThrows(){
+    public void create_medicineIsNotValid_constraintViolationExceptionThrows(){
         var medicine = new Medicine(1, null);
         Mockito.when(medicineRepository.save(any(Medicine.class))).thenThrow(ConstraintViolationException.class);
 
@@ -56,7 +56,7 @@ public class MedicineServiceImplTests {
     }
 
     @Test
-    public void getMedicineById_MedicineIdIsNotValid_NoSuchElementExceptionThrows(){
+    public void getMedicineById_medicineIdIsNotValid_noSuchElementExceptionThrows(){
         Long medicineId = -2L;
         Mockito.when(medicineRepository.findById(medicineId)).thenReturn(Optional.empty());
 
@@ -64,7 +64,7 @@ public class MedicineServiceImplTests {
     }
 
     @Test
-    public void getMedicineById_MedicineIdIsValid_MedicineFound(){
+    public void getMedicineById_medicineIdIsValid_medicineFound(){
         Long medicineId = 1L;
         Medicine medicine = new Medicine(1, "someTitle");
         Mockito.when(medicineRepository.findById(medicineId)).thenReturn(java.util.Optional.of(medicine));
@@ -75,8 +75,8 @@ public class MedicineServiceImplTests {
     }
 
     @Test
-    public void getAllMedicines_MedicinesFound_ReturnList(){
-        List<Medicine> medicines = new ArrayList<>();
+    public void getAllMedicines_medicinesFound_returnList(){
+        ArrayList<Medicine> medicines = new ArrayList<>();
         medicines.addAll(List.of(
                 new Medicine(1, "testTitle"),
                 new Medicine(2, "testTitle2"),
@@ -92,7 +92,7 @@ public class MedicineServiceImplTests {
     }
 
     @Test
-    public void getAllMedicines_MedicinesNotFound_ReturnEmptyList(){
+    public void getAllMedicines_medicinesNotFound_returnEmptyList(){
         Mockito.when(medicineRepository.findAll()).thenReturn(List.of());
 
         final var medicines = medicineService.getAll();
@@ -101,14 +101,14 @@ public class MedicineServiceImplTests {
     }
 
     @Test
-    public void getAllMedicines_MedicinesNotFound_ThrowsNullPointerException(){
+    public void getAllMedicines_medicinesNotFound_throwsNullPointerException(){
         Mockito.when(medicineRepository.findAll()).thenReturn(null);
 
         assertThatExceptionOfType(NullPointerException.class).isThrownBy(()->medicineService.getAll());
     }
 
     @Test
-    public void deleteMedicine_MedicineIdIsValid_MedicineDeleted(){
+    public void deleteMedicine_medicineIdIsValid_medicineDeleted(){
         Long medicineId = 2L;
 
         medicineService.delete(medicineId);
